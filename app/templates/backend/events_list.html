@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Backend – Events{% endblock %}
+{% block nav %}
+  <a href="/backend/events/new">New event</a>
+{% endblock %}
+{% block content %}
+<h1>Backend – Events (paginated)</h1>
+<p><a href="/backend/events/new" class="btn">Create event</a></p>
+<table style="width: 100%; border-collapse: collapse;">
+  <thead>
+    <tr style="text-align: left; border-bottom: 2px solid #333;">
+      <th>Title</th>
+      <th>Date(s)</th>
+      <th>Location</th>
+      <th>Featured</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for event in events %}
+    <tr style="border-bottom: 1px solid #ddd;" id="event-{{ event.id }}">
+      <td><a href="/events/{{ event.id }}">{{ event.title }}</a></td>
+      <td>
+        {% for d in event.dates %}
+        {{ d.date_time.strftime('%Y-%m-%d %H:%M') }}{% if not loop.last %}<br>{% endif %}
+        {% endfor %}
+        {% if not event.dates %}—{% endif %}
+      </td>
+      <td>{{ event.location or '—' }}</td>
+      <td>{{ 'Yes' if event.featured else 'No' }}</td>
+      <td>
+        <a href="/backend/events/{{ event.id }}/edit" class="btn btn-secondary">Edit</a>
+        <form method="post" action="/backend/events/{{ event.id }}/delete" style="display: inline;" onsubmit="return confirm('Delete this event?');">
+          <button type="submit" class="btn" style="background: #c00;">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if total_pages > 1 %}
+<p style="margin-top: 1rem;">
+  Page {{ page }} of {{ total_pages }}.
+  {% if page > 1 %}<a href="/backend?page={{ page - 1 }}">Previous</a>{% endif %}
+  {% if page < total_pages %}<a href="/backend?page={{ page + 1 }}">Next</a>{% endif %}
+</p>
+{% endif %}
+{% endblock %}

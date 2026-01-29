@@ -1,0 +1,37 @@
+{% extends "base.html" %} {% block title %}{{ event.title }} - Event Board{%
+endblock %} {% block content %}
+<article>
+  <h1>{{ event.title }}</h1>
+  {% if event.image_url %}
+  <p>
+    <img
+      src="{{ event.image_url }}"
+      alt="{{ event.title }}"
+      style="max-width: 100%; height: auto"
+    />
+  </p>
+  {% endif %} {% if event.dates %}
+  <p>
+    <strong>Dates:</strong>
+    {% for d in event.dates %} {{ d.date_time.strftime('%Y-%m-%d %H:%M') }}{% if
+    not loop.last %}, {% endif %} {% endfor %}
+  </p>
+  {% endif %} {% if event.location %}
+  <p><strong>Location:</strong> {{ event.location }}</p>
+  {% endif %} {% if event.description %}
+  <div>{{ event.description }}</div>
+  {% endif %}
+  <p style="margin-top: 1rem">
+    {% set first_date = event.dates[0].date_time.strftime('%Y-%m-%d') if
+    event.dates else '' %}
+    <a
+      href="https://twitter.com/intent/tweet?text=I+will+attend+to+{{ event.title | urlencode }}+%40+{{ first_date | urlencode }}"
+      target="_blank"
+      rel="noopener"
+      class="btn"
+      >Share on Twitter</a
+    >
+  </p>
+  <p><a href="/">Back to events</a></p>
+</article>
+{% endblock %}

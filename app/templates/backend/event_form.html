@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit event' if is_edit else 'New event' }} – Backend{% endblock %}
+{% block content %}
+<h1>{{ 'Edit event' if is_edit else 'Create event' }}</h1>
+<form method="post" action="{% if is_edit %}/backend/events/{{ event.id }}{% else %}/backend/events{% endif %}">
+  <label for="title">Title</label>
+  <input type="text" id="title" name="title" value="{{ event.title if event else '' }}" required />
+  <label for="description">Description</label>
+  <textarea id="description" name="description">{{ event.description or '' if event else '' }}</textarea>
+  <label for="location">Location</label>
+  <input type="text" id="location" name="location" value="{{ event.location or '' if event else '' }}" />
+  <label for="image_url">Image URL</label>
+  <input type="url" id="image_url" name="image_url" value="{{ event.image_url or '' if event else '' }}" />
+  <label>
+    <input type="checkbox" name="featured" {{ 'checked' if event and event.featured else '' }} />
+    Featured
+  </label>
+  <label for="dates">Date list (one per line or comma-separated, ISO format e.g. 2025-02-01T10:00:00)</label>
+  <textarea id="dates" name="dates">{% if event and event.dates %}{% for d in event.dates %}{{ d.date_time.strftime('%Y-%m-%dT%H:%M:%S') }}{{ '\n' if not loop.last else '' }}{% endfor %}{% endif %}</textarea>
+  <p>
+    <button type="submit" class="btn">{{ 'Update' if is_edit else 'Create' }}</button>
+    <a href="/backend" class="btn btn-secondary">Cancel</a>
+  </p>
+</form>
+{% endblock %}
